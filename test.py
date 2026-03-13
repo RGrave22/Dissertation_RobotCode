@@ -54,9 +54,16 @@ async def handler(websocket):
 		print("Client disconnected")
 	
 async def main():
+	dog.pace("normal")
+	dog.move("X", 25)
+	time.sleep(1)
+	dog.stop()
+	
 	server = await websockets.serve(handler, "0.0.0.0", 8765)
 	print("Creating websocket server...")
 	await asyncio.Future()
+	
+	
 
 
 asyncio.run(main())
