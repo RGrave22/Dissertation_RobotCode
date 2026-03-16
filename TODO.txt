@@ -1,0 +1,5 @@
+TODO:
+
+-> Testar o translation, attitude, Periodic_tran e periodic_rot
+	e implementar a Robot API com eles :)
+

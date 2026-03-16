@@ -3,6 +3,7 @@ from xgolib import XGO
 from xgoedu import XGOEDU
 import sys, socket
 sys.path.append("..")
+sys.path.append(".")
 
 os.system('sudo chmod 777 /dev/ttyAMA0')
 dog = XGO(port='/dev/ttyAMA0', version='xgolite')
@@ -55,9 +56,6 @@ async def handler(websocket):
 		connected_clients.remove(websocket)
 	
 		
-	
-	
-	
 	
 async def main():
 	print("Starting websocket server...")
