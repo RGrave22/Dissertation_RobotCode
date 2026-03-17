@@ -1,19 +1,23 @@
 import os,time,sys,serial,subprocess,websocket,json,asyncio,websockets
 from xgolib import XGO
-from xgoedu import XGOEDU
-import sys, socket
+#from xgoedu import XGOEDU
+from robotAPI import edu
+import sys, socket, robotAPI
 sys.path.append("..")
+sys.path.append(".")
 
 os.system('sudo chmod 777 /dev/ttyAMA0')
 dog = XGO(port='/dev/ttyAMA0', version='xgolite')
+#edu= XGOEDU()
 version = dog.read_firmware()
 dog_type = 'L'
+
 
 subprocess.run(["sudo","pkill","-f","main.py"]) #Se nao for feito, nao funciona
 
 #subprocess.run(["sudo", "systemctl", "restart", "NetworkManager"])
 
-edu= XGOEDU()
+
 
 print(dog_type)
 print(version)
@@ -53,15 +57,33 @@ async def handler(websocket):
 	finally:
 		print("Client disconnected")
 	
-async def main():
-	dog.pace("normal")
-	dog.move("X", 25)
-	time.sleep(1)
-	dog.stop()
+def main():
+	dog.reset()
+	#robotAPI.rotateWithYaw("r",45)
 	
-	server = await websockets.serve(handler, "0.0.0.0", 8765)
-	print("Creating websocket server...")
-	await asyncio.Future()
+	#robotAPI.pick_obj()
+	
+	#robotAPI.walk_in_place(10, 4)
+	
+	#robotAPI.body_translation("l", 18)
+	#robotAPI.body_translation("b", 35)
+	#robotAPI.body_translation("z", 75)
+
+	#robotAPI.body_attitude("yl", 11)
+	#time.sleep(2)
+	#robotAPI.body_attitude("yr", 11)
+
+	#time.sleep(2)
+	#dog.reset()
+	
+	print(dog.read_roll())
+	print(dog.read_pitch())
+	print(dog.read_yaw())
+	
+	
+	#server = await websockets.serve(handler, "0.0.0.0", 8765)
+	#print("Creating websocket server...")
+	#await asyncio.Future()
 	
 	
 

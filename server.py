@@ -1,13 +1,14 @@
 import os,time,sys,serial,subprocess,websocket,json,asyncio,websockets
 from xgolib import XGO
-from xgoedu import XGOEDU
-import sys, socket
+#from xgoedu import XGOEDU
+from robotAPI import edu
+import sys, socket, robotAPI
 sys.path.append("..")
 sys.path.append(".")
 
 os.system('sudo chmod 777 /dev/ttyAMA0')
 dog = XGO(port='/dev/ttyAMA0', version='xgolite')
-edu= XGOEDU()
+#edu= XGOEDU()
 
 version = dog.read_firmware()
 dog_type = 'L'
@@ -58,6 +59,7 @@ async def handler(websocket):
 		
 	
 async def main():
+	
 	print("Starting websocket server...")
 	server = await websockets.serve(handler, "0.0.0.0", 8765)
 	print("Websocket server ready and listening on port: 8765!")
