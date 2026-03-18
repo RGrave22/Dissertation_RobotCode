@@ -1,6 +1,9 @@
-import os,time,sys,serial,subprocess,websocket,json,asyncio,websockets
+import subprocess
+#matar este sempre primeiro
+subprocess.run(["sudo","pkill","-f","main.py"])
+
+import os,time,sys,serial,websocket,json,asyncio,websockets,socket
 from xgolib import XGO
-#from xgoedu import XGOEDU
 from robotAPI import edu
 import sys, socket, robotAPI
 sys.path.append("..")
@@ -13,14 +16,53 @@ dog = XGO(port='/dev/ttyAMA0', version='xgolite')
 version = dog.read_firmware()
 dog_type = 'L'
 
-subprocess.run(["sudo","pkill","-f","main.py"])
 
 
 print("*****************************************")
 print("*************XGO-LITE-SERVER*************")
 print("*****************************************")
 
+async def display_battery():
+    while True:
+        try:
+            battery = dog.read_battery()
+            print(battery)
+            if str(battery) == '0':
+                print('uart error')
+            else:
+                # limpa a área
+                edu.lcd_rectangle(255, 2, 318, 20, fill=(0, 0, 0), outline=(0, 0, 0))
+                
+                # retangulo da borda da bateria e polo
+                edu.lcd_rectangle(257, 2, 312, 20, fill=None, outline=(255, 255, 255), width=2)
+                edu.lcd_rectangle(312, 7, 317, 15, fill=(255, 255, 255), outline=(255, 255, 255))
+                
+                # preenchimento verde/vermelho
+                fill_width = int(49 * battery / 100)
+                bar_color = (0, 180, 0) if battery > 20 else (255, 0, 0)
+                edu.lcd_rectangle(259, 4, 259 + fill_width, 18, fill=bar_color, outline=bar_color)
+                
+                # percentagem da bateria
+                edu.lcd_text(265, 3, f"{battery}%", color=(255, 255, 255), fontsize=12)
+                
+        except Exception as e:
+            print(e)
+        
+        await asyncio.sleep(120)
+        
+    
+def display_info():
+    ip = os.popen("hostname -I").read().strip().split()[0]
+    
+    edu.lcd_rectangle(0, 25, 320, 200, fill=(0, 0, 0), outline=(0, 0, 0))  
+    edu.lcd_text(90, 60, "XGOBOT", color=(0, 155, 255), fontsize=35)
+   
+    ip_x = int((320 - len(ip) * 12) / 2)
+    edu.lcd_text(ip_x, 180, ip, color=(255,255,255), fontsize = 24)
 
+    
+    
+    
 connected_clients = set()
 
 async def handler(websocket):
@@ -63,6 +105,9 @@ async def main():
 	print("Starting websocket server...")
 	server = await websockets.serve(handler, "0.0.0.0", 8765)
 	print("Websocket server ready and listening on port: 8765!")
+	display_info()
+	asyncio.create_task(display_battery())
+	
 	await asyncio.Future()
 
 

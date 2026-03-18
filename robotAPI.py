@@ -142,14 +142,14 @@ def body_attitude(direction, value):
 def pick_obj():
 	dog.attitude("p",15) #testar se é este o valor correto para o robo se inclinar
 	dog.claw(0)
-	time.sleep(2)
+	time.sleep(1)
 	dog.arm_mode(1) #verificar se é preciso
 	dog.arm(120,-70)
 	time.sleep(2)
 	dog.arm_mode(0) #verificar se é preciso
-	dog.arm(-79, -94)
 	dog.claw(255)
-	dog.reset() #nao sei se é preciso
+	dog.reset()
+	time.sleep(2) #nao sei se é preciso
 	return True
 	
 
@@ -158,12 +158,13 @@ def drop_obj():
 	dog.claw(255)
 	time.sleep(2)
 	dog.arm_mode(1) #verificar se é preciso
-	dog.arm(120,-70)
+	dog.arm(120,-95)
 	time.sleep(2)
-	dog.arm_mode(0) #verificar se é preciso
-	dog.arm(-79, -94)
+	#dog.arm_mode(0) #verificar se é preciso
+	#dog.arm(-79, -94)
 	dog.claw(0)
-	dog.reset() #nao sei se é preciso
+	dog.reset() 
+	time.sleep(2)
 	return True
 
 def open_claw():
@@ -186,8 +187,8 @@ def arm_position(x, z):
 	time.sleep(1)
 	return True
 
-def reset_arm():
-	dog.arm(0, 0) #o dog.reset() da reset ao cao todo, dai testar se da para evitar isso
-	time.sleep(1)
-	return True
+#def reset_arm():
+#	dog.arm(0, 0) #o dog.reset() da reset ao cao todo, dai testar se da para evitar isso
+#	time.sleep(1)
+#	return True
 

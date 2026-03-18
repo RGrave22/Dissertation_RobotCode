@@ -59,26 +59,21 @@ async def handler(websocket):
 	
 def main():
 	dog.reset()
-	#robotAPI.rotateWithYaw("r",45)
-	
-	#robotAPI.pick_obj()
-	
-	#robotAPI.walk_in_place(10, 4)
-	
-	#robotAPI.body_translation("l", 18)
-	#robotAPI.body_translation("b", 35)
-	#robotAPI.body_translation("z", 75)
-
-	#robotAPI.body_attitude("yl", 11)
-	#time.sleep(2)
-	#robotAPI.body_attitude("yr", 11)
-
-	#time.sleep(2)
-	#dog.reset()
 	
 	print(dog.read_roll())
 	print(dog.read_pitch())
 	print(dog.read_yaw())
+	
+	
+	#dog.arm_mode(0)
+	#time.sleep(2)
+	#dog.arm(-50,-50)
+	#time.sleep(2)
+	#dog.arm(100, -70)
+	#time.sleep(2)
+	#dog.arm(0, 0)
+	#ime.sleep(2)
+	
 	
 	
 	#server = await websockets.serve(handler, "0.0.0.0", 8765)
