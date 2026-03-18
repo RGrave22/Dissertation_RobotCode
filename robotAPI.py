@@ -184,7 +184,7 @@ def claw(val):
 
 def arm_position(x, z):
 	dog.arm(x, z)
-	time.sleep(1)
+	time.sleep(2)
 	return True
 
 #def reset_arm():
