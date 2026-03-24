@@ -135,6 +135,36 @@ def body_attitude(direction, value):
 #IMPORTANT ->  ainda falta as translacoes e rotacoes periodicas()
 
 
+def push_ups(value):
+	
+	dog.leg(3, [0, 0, 80])   
+	dog.leg(4, [0, 0, 80]) 
+	time.sleep(0.6) 
+	
+	for _ in range(value):
+		
+		# DESCER
+		time.sleep(0.2)
+		dog.leg(1, [0, 0, 75])
+		dog.leg(2, [0, 0, 75])  
+		time.sleep(0.4)
+
+		#SUBIR
+		dog.leg(1, [0, 0, 90])
+		dog.leg(2, [0, 0, 90])
+		time.sleep(0.4)
+
+	dog.reset()
+	
+
+def worm_dance(sleep):
+	
+	dog.translation("z", 75)
+	time.sleep(1)
+	dog.periodic_rot("p", 2.5) #entre 2 e 3 deve ser o ideal
+	time.sleep(sleep)
+	dog.periodic_rot("p", 0)
+
 #========================================
 #				   Arm
 #========================================
@@ -186,6 +216,20 @@ def arm_position(x, z):
 	dog.arm(x, z)
 	time.sleep(2)
 	return True
+	
+def handshake():
+	body_translation("f", 35)
+	time.sleep(0.4)
+	
+	for _ in range(3):
+		dog.arm(140,20)
+		time.sleep(0.5)
+		dog.arm(140,50)
+		time.sleep(0.5)
+	
+	time.sleep(1)
+	dog.reset()	
+	
 
 #def reset_arm():
 #	dog.arm(0, 0) #o dog.reset() da reset ao cao todo, dai testar se da para evitar isso

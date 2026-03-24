@@ -57,33 +57,49 @@ async def handler(websocket):
 	finally:
 		print("Client disconnected")
 	
+	
+	
+def smooth_wave(reps=4):
+    import math
+
+    steps = 15          
+    max_angle = 15
+    delay = 0.1        
+
+    for _ in range(reps):
+        for i in range(steps):
+            
+            angle = max_angle * math.sin(2 * math.pi * i / steps)
+            dog.attitude('p', int(angle))
+            time.sleep(delay)
+
+    dog.reset()
+	
+	
 def main():
 	dog.reset()
 	
-	print(dog.read_roll())
-	print(dog.read_pitch())
-	print(dog.read_yaw())
+	#dog.action(21)
 	
+	robotAPI.push_ups(5)
 	
-	#dog.arm_mode(0)
-	#time.sleep(2)
-	#dog.arm(-50,-50)
-	#time.sleep(2)
-	#dog.arm(100, -70)
-	#time.sleep(2)
-	#dog.arm(0, 0)
-	#ime.sleep(2)
+	print(dog.read_battery())
 	
+	#robotAPI.body_translation("f", 35)
+	#time.sleep(1)
+	#for _ in range(5):
+	#	dog.arm(140,20)
+	#	time.sleep(0.5)
+	#	dog.arm(140,50)
+	#	time.sleep(0.5)
 	
-	
-	#server = await websockets.serve(handler, "0.0.0.0", 8765)
-	#print("Creating websocket server...")
-	#await asyncio.Future()
-	
-	
+	#dog.reset()	
 
 
 asyncio.run(main())
+
+
+
 
 
 #dog.reset()
