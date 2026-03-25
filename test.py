@@ -81,9 +81,38 @@ def main():
 	
 	#dog.action(21)
 	
-	robotAPI.push_ups(5)
+	#robotAPI.push_ups(5)
 	
 	print(dog.read_battery())
+	
+	
+	#robotAPI.body_translation("b", 35)
+	#robotAPI.body_attitude("pf", 15)
+	#dog.translation("z", 75)
+	#dog.periodic_tran("z", 1.5)
+	#time.sleep(0.2)
+	#dog.leg(1, [0, 0, 75])
+	
+	time.sleep(0.4)
+	dog.leg(3, [-35, 0, 75])
+	dog.leg(4, [-35, 0, 75])
+	time.sleep(2)
+	#time.sleep(4)
+	for _ in range(5):
+		
+		# DESCER
+		time.sleep(0.2)
+		dog.leg(1, [0, 0, 75])
+		dog.leg(2, [0, 0, 75])  
+		time.sleep(0.4)
+
+		#SUBIR
+		dog.leg(1, [0, 0, 100])
+		dog.leg(2, [0, 0, 100])
+		time.sleep(0.4)
+
+	dog.reset()
+	
 	
 	#robotAPI.body_translation("f", 35)
 	#time.sleep(1)

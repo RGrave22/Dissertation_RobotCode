@@ -164,6 +164,16 @@ def worm_dance(sleep):
 	dog.periodic_rot("p", 2.5) #entre 2 e 3 deve ser o ideal
 	time.sleep(sleep)
 	dog.periodic_rot("p", 0)
+	
+def tail_whip(sleep):
+	
+	body_translation("b", 35)
+	body_attitude("pf", 15)
+	dog.periodic_tran("y", 1.5)
+	
+	time.sleep(sleep)
+	dog.reset()
+	
 
 #========================================
 #				   Arm
