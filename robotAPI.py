@@ -180,30 +180,23 @@ def tail_whip(sleep):
 #========================================
 
 def pick_obj():
-	dog.attitude("p",15) #testar se é este o valor correto para o robo se inclinar
-	dog.claw(0)
-	time.sleep(1)
-	dog.arm_mode(1) #verificar se é preciso
-	dog.arm(120,-70)
-	time.sleep(2)
-	dog.arm_mode(0) #verificar se é preciso
-	dog.claw(255)
+	robotAPI.body_attitude("pf", 15)
+	robotAPI.claw(0)
+	robotAPI.arm_position(120, -60)
+	time.sleep(0.5)
+	robotAPI.claw(255)
 	dog.reset()
-	time.sleep(2) #nao sei se é preciso
+	time.sleep(2)
 	return True
 	
 
 def drop_obj():
-	dog.attitude("p",15) #testar se é este o valor correto para o robo se inclinar
-	dog.claw(255)
-	time.sleep(2)
-	dog.arm_mode(1) #verificar se é preciso
-	dog.arm(120,-95)
-	time.sleep(2)
-	#dog.arm_mode(0) #verificar se é preciso
-	#dog.arm(-79, -94)
-	dog.claw(0)
-	dog.reset() 
+	robotAPI.body_attitude("pf", 15)
+	robotAPI.claw(255)
+	robotAPI.arm_position(120, -20)
+	time.sleep(0.5)
+	robotAPI.claw(0)
+	dog.reset()
 	time.sleep(2)
 	return True
 

@@ -93,27 +93,12 @@ def main():
 	#time.sleep(0.2)
 	#dog.leg(1, [0, 0, 75])
 	
-	time.sleep(0.4)
-	dog.leg(3, [-35, 0, 75])
-	dog.leg(4, [-35, 0, 75])
+	robotAPI.arm_position(120, -60)
 	time.sleep(2)
-	#time.sleep(4)
-	for _ in range(5):
-		
-		# DESCER
-		time.sleep(0.2)
-		dog.leg(1, [0, 0, 75])
-		dog.leg(2, [0, 0, 75])  
-		time.sleep(0.4)
-
-		#SUBIR
-		dog.leg(1, [0, 0, 100])
-		dog.leg(2, [0, 0, 100])
-		time.sleep(0.4)
-
-	dog.reset()
-	
-	
+	#robotAPI.body_attitude("pf", 0)
+	robotAPI.arm_position(70, 20)
+	time.sleep(2)
+	robotAPI.arm_position(0, 0)
 	#robotAPI.body_translation("f", 35)
 	#time.sleep(1)
 	#for _ in range(5):
@@ -121,7 +106,10 @@ def main():
 	#	time.sleep(0.5)
 	#	dog.arm(140,50)
 	#	time.sleep(0.5)
-	
+	#dog.arm_mode(0)
+	dog.arm_z(0)
+	#dog.arm_x(0)
+	#robotAPI.arm_position(0, 0)
 	#dog.reset()	
 
 
