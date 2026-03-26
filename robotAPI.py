@@ -165,16 +165,41 @@ def worm_dance(sleep):
 	time.sleep(sleep)
 	dog.periodic_rot("p", 0)
 	
-def tail_whip(sleep):
+def tail_whip():
 	
-	body_translation("b", 35)
-	body_attitude("pf", 15)
-	dog.periodic_tran("y", 1.5)
+	dog.translation("x", -35)
+	time.sleep(0.5)
+	dog.attitude("p", 15)
+	time.sleep(0.5)
+	
+	for _ in range(8):
+		dog.attitude("y", 3)
+		time.sleep(0.2)
+		dog.attitude("y", -3)
+		time.sleep(0.2)
+		
+	dog.reset()
+	
+def lie_down(sleep):
+	dog.motor(31, 73)
+	dog.motor(41, 73)
+	dog.motor(32, 93)
+	dog.motor(42, 93)
+	
+	time.sleep(1)
+	
+	dog.motor(12, 80)
+	dog.motor(22, 80)
+	dog.motor(11, -38)
+	dog.motor(21, -38)
+	
+	#dog.motor(33, 31)
+	#dog.motor(43, 31) Ver ainda quais fazem mais sentido
+	dog.motor(13, 31)
+	dog.motor(43, 31)
 	
 	time.sleep(sleep)
 	dog.reset()
-	
-
 #========================================
 #				   Arm
 #========================================
@@ -232,7 +257,7 @@ def handshake():
 	
 	time.sleep(1)
 	dog.reset()	
-	
+
 
 #def reset_arm():
 #	dog.arm(0, 0) #o dog.reset() da reset ao cao todo, dai testar se da para evitar isso

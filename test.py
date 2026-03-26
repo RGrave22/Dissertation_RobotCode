@@ -79,38 +79,17 @@ def smooth_wave(reps=4):
 def main():
 	dog.reset()
 	
-	#dog.action(21)
-	
-	#robotAPI.push_ups(5)
+	edu.lcd_picture("faces/happy.png", 0,0)
+			
+	dog.reset()
 	
 	print(dog.read_battery())
 	
 	
-	#robotAPI.body_translation("b", 35)
-	#robotAPI.body_attitude("pf", 15)
-	#dog.translation("z", 75)
-	#dog.periodic_tran("z", 1.5)
-	#time.sleep(0.2)
-	#dog.leg(1, [0, 0, 75])
 	
-	robotAPI.arm_position(120, -60)
-	time.sleep(2)
-	#robotAPI.body_attitude("pf", 0)
-	robotAPI.arm_position(70, 20)
-	time.sleep(2)
-	robotAPI.arm_position(0, 0)
-	#robotAPI.body_translation("f", 35)
-	#time.sleep(1)
-	#for _ in range(5):
-	#	dog.arm(140,20)
-	#	time.sleep(0.5)
-	#	dog.arm(140,50)
-	#	time.sleep(0.5)
-	#dog.arm_mode(0)
-	dog.arm_z(0)
-	#dog.arm_x(0)
-	#robotAPI.arm_position(0, 0)
-	#dog.reset()	
+	
+
+	
 
 
 asyncio.run(main())
@@ -119,37 +98,4 @@ asyncio.run(main())
 
 
 
-#dog.reset()
-#edu.lcd_clear()
 
-#dog.attitude("p",15)
-#dog.attitude("y",10)
-
-#dog.claw(0)
-#time.sleep(4)
-#dog.arm_mode(1)
-#dog.arm(120,-70)
-#time.sleep(2)
-#dog.arm_mode(0)
-#dog.arm(-79, -94)
-#dog.claw(255)
-
-#dog.move('x', 18)
-#time.sleep(5)
-#dog.stop()
-
-#dog.reset()
-#time.sleep(3)
-
-#time.sleep(4)
-#dog.arm_mode(1)
-#dog.arm(120,-70)
-#time.sleep(2)
-#dog.arm_mode(0)
-#dog.arm(-79, -94)
-#dog.claw(0)
-
-#dog.reset()
-
-#edu.lcd_text(40,40,'Hello, World!', (255,255,255), fontsize=24)
-#time.sleep(1)
