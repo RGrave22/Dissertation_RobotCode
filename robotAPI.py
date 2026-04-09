@@ -34,7 +34,7 @@ def move(direction, steps):
 	time.sleep(timeToSleep)
 	dog.stop()
 	time.sleep(0.5)
-	return True
+	
 
 def rotate(direction, angle):
 	anglePerSec = 30
@@ -53,7 +53,7 @@ def rotate(direction, angle):
 	time.sleep(timeToSleep)
 	dog.stop()
 	time.sleep(0.5)
-	return True	
+	
 	
 	
 def rotateWithYaw(direction, angle):
@@ -82,7 +82,7 @@ def rotateWithYaw(direction, angle):
 		
 	dog.stop()
 	time.sleep(0.5)
-	return True	
+	
 	
 	
 
@@ -91,7 +91,7 @@ def walk_in_place(legHeight, timeToSleep):
 	dog.mark_time(legHeight)
 	time.sleep(timeToSleep)
 	dog.stop()
-	return True
+	
 
 def body_translation(direction, value):
 
@@ -110,7 +110,7 @@ def body_translation(direction, value):
 
 	dog.translation(axis, val)
 	time.sleep(1)
-	return True
+	
 
 def body_attitude(direction, value):
 
@@ -130,11 +130,47 @@ def body_attitude(direction, value):
 
 	dog.attitude(axis, val)
 	time.sleep(1)
-	return True
+	
 
-#IMPORTANT ->  ainda falta as translacoes e rotacoes periodicas()
+def leg(leg, x, y, z):
+    
+    legMap = {
+        "fl": 1,  
+        "fr": 2,  
+        "br": 3, 
+        "bl": 4,
+    }
 
+    leg_id = legMap.get(leg.lower())
 
+    dog.leg(leg_id, [x, y, z])
+    #time.sleep(1)
+    
+    
+def leg_motor(leg_str, motor, value):
+    legMap = {
+        "fl": 1,
+        "fr": 2,
+        "br": 3,
+        "bl": 4,
+    }
+
+    posMap = {
+        "b": 1,  # bottom
+        "m": 2,  # middle
+        "t": 3,  # top
+    }
+
+    leg_id = legMap[leg_str.lower()]
+    pos_id = posMap[motor.lower()]
+
+    motor_id = leg_id * 10 + pos_id
+
+    dog.motor(motor_id, value)
+    #time.sleep(1)
+   
+
+#AINDA SEM BLOCO
 def push_ups(value):
 	
 	dog.leg(3, [0, 0, 80])   
@@ -200,6 +236,19 @@ def lie_down(sleep):
 	
 	time.sleep(sleep)
 	dog.reset()
+	
+def sit():
+	dog.translation("x", -35)
+	dog.attitude("p", -20)
+	leg_motor("bl", "b", -25)
+	leg_motor("br", "b", -25)
+	leg_motor("bl", "m", 60)
+	leg_motor("br", "m", 60)
+	leg_motor("fl", "b", 43)
+	leg_motor("fr", "b", 43)
+	
+
+
 #========================================
 #				   Arm
 #========================================
@@ -212,7 +261,7 @@ def pick_obj():
 	robotAPI.claw(255)
 	dog.reset()
 	time.sleep(2)
-	return True
+	
 	
 
 def drop_obj():
@@ -223,27 +272,27 @@ def drop_obj():
 	robotAPI.claw(0)
 	dog.reset()
 	time.sleep(2)
-	return True
+	
 
 def open_claw():
 	dog.claw(0)
 	time.sleep(1)
-	return True
+	
 
 def close_claw():
 	dog.claw(255)
 	time.sleep(1)
-	return True
+	
 
 def claw(val):
 	dog.claw(val)
 	time.sleep(1)
-	return True
+	
 
 def arm_position(x, z):
 	dog.arm(x, z)
 	time.sleep(2)
-	return True
+	
 	
 def handshake():
 	body_translation("f", 35)
@@ -256,11 +305,132 @@ def handshake():
 		time.sleep(0.5)
 	
 	time.sleep(1)
-	dog.reset()	
+	dog.reset()
+	
 
 
 #def reset_arm():
 #	dog.arm(0, 0) #o dog.reset() da reset ao cao todo, dai testar se da para evitar isso
 #	time.sleep(1)
 #	return True
+
+
+#========================================
+#				   Display
+#========================================
+
+def text_on_screen_center(text, color):
+	font_size = 30
+	screen_w = 320
+	screen_h = 240  
+	char_w = fontsize * 0.6
+	text_w = len(text) * char_w
+	
+	x = int((screen_w - text_w) / 2)
+	y = int((screen_h - fontsize) / 2)
+
+	edu.lcd_text(x, y, text, color,fontsize)
+	
+
+	
+def happy_face():
+	edu.lcd_clear()
+	edu.lcd_picture("faces/happy_face.png", 5, 0)
+	
+
+def sad_face():
+	edu.lcd_clear()
+	edu.lcd_picture("faces/sad_face.png", 5, 0)
+
+def excited_face():
+	edu.lcd_clear()
+	edu.lcd_picture("faces/excited_face.png", 5, 0)
+
+def sleepy_face():
+	edu.lcd_clear()
+	edu.lcd_picture("faces/sleepy_face.png", 5, 0)
+
+def angry_face():
+	edu.lcd_clear()
+	edu.lcd_picture("faces/angry_face.png", 5, 0)
+
+def scared_face():
+	edu.lcd_clear()
+	edu.lcd_picture("faces/scared_face.png", 5, 0)
+
+def tongue_face():
+	edu.lcd_clear()
+	edu.lcd_picture("faces/tongue_face.png", 5, 0)	
+
+#========================================
+#				   AI (Recognition)
+#========================================
+def detect_good():
+	start = time.time()	
+	while time.time() - start < 8:
+		result = edu.gestureRecognition()
+		print(result)
+		
+		if result != None:
+			ges, (x,y) = result
+			if ges == "Good":
+				time.sleep(2)
+				edu.lcd_clear()
+				return True
+	edu.lcd_clear()	
+	return False
+
+def detect_ok():
+	start = time.time()	
+	while time.time() - start < 8:
+		result = edu.gestureRecognition()
+		print(result)
+		
+		if result != None:
+			ges, (x,y) = result
+			if ges == "Ok":
+				time.sleep(2)
+				edu.lcd_clear()
+				return True
+	edu.lcd_clear()
+	return False
+	
+def detect_happy():
+	start = time.time()	
+	while time.time() - start < 20:
+		result = edu.emotion()
+		print(result)
+		
+		if result != None:
+			emotion, (x,y) = result
+			if emotion == "Happy":
+				time.sleep(2)
+				edu.lcd_clear()
+				return True
+	edu.lcd_clear()
+	return False
+
+def detect_sad():
+	start = time.time()	
+	while time.time() - start < 20:
+		result = edu.emotion()
+		print(result)
+		
+		if result != None:
+			emotion, (x,y) = result
+			if emotion == "Sad":
+				time.sleep(2)
+				edu.lcd_clear()
+				return True
+	edu.lcd_clear()
+	return False
+
+#========================================
+#				   Sounds 
+#========================================
+
+def bark():
+	edu.xgoSpeaker("sounds/bark.mp3")
+	return True
+	
 

@@ -75,19 +75,26 @@ def smooth_wave(reps=4):
 
     dog.reset()
 	
+
+	
 	
 def main():
 	dog.reset()
 	
-	edu.lcd_picture("faces/happy.png", 0,0)
+	#edu.lcd_picture("faces/happy.png", 0,0)
+	#robotAPI.body_translation("b", 35)
+	
+	edu.xgoSpeaker("sounds/bark.mp3")
+
+	#dog.action(12) #Sit
+	
+
 			
-	dog.reset()
+	#dog.reset()
 	
 	print(dog.read_battery())
 	
-	
-	
-	
+
 
 	
 
