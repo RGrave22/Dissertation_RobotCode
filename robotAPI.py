@@ -254,22 +254,22 @@ def sit():
 #========================================
 
 def pick_obj():
-	robotAPI.body_attitude("pf", 15)
-	robotAPI.claw(0)
-	robotAPI.arm_position(120, -60)
+	body_attitude("pf", 15)
+	claw(0)
+	arm_position(120, -60)
 	time.sleep(0.5)
-	robotAPI.claw(255)
+	claw(255)
 	dog.reset()
 	time.sleep(2)
 	
 	
 
 def drop_obj():
-	robotAPI.body_attitude("pf", 15)
-	robotAPI.claw(255)
-	robotAPI.arm_position(120, -20)
+	body_attitude("pf", 15)
+	claw(255)
+	arm_position(120, -20)
 	time.sleep(0.5)
-	robotAPI.claw(0)
+	claw(0)
 	dog.reset()
 	time.sleep(2)
 	
@@ -320,24 +320,22 @@ def handshake():
 #========================================
 
 def text_on_screen_center(text, color):
-	font_size = 30
+	edu.lcd_clear()
+	fontSize = 30
 	screen_w = 320
 	screen_h = 240  
-	char_w = fontsize * 0.6
+	char_w = fontSize * 0.5
 	text_w = len(text) * char_w
 	
 	x = int((screen_w - text_w) / 2)
-	y = int((screen_h - fontsize) / 2)
+	y = int((screen_h - fontSize) / 2)
 
-	edu.lcd_text(x, y, text, color,fontsize)
-	
-
+	edu.lcd_text(x, y, text, color, fontSize)
 	
 def happy_face():
 	edu.lcd_clear()
 	edu.lcd_picture("faces/happy_face.png", 5, 0)
 	
-
 def sad_face():
 	edu.lcd_clear()
 	edu.lcd_picture("faces/sad_face.png", 5, 0)
@@ -367,7 +365,7 @@ def tongue_face():
 #========================================
 def detect_good():
 	start = time.time()	
-	while time.time() - start < 8:
+	while time.time() - start < 20:
 		result = edu.gestureRecognition()
 		print(result)
 		
@@ -382,7 +380,7 @@ def detect_good():
 
 def detect_ok():
 	start = time.time()	
-	while time.time() - start < 8:
+	while time.time() - start < 20:
 		result = edu.gestureRecognition()
 		print(result)
 		
@@ -428,9 +426,23 @@ def detect_sad():
 #========================================
 #				   Sounds 
 #========================================
-
 def bark():
 	edu.xgoSpeaker("sounds/bark.mp3")
 	return True
-	
+
+def whine():
+    edu.xgoSpeaker("sounds/whine.mp3")
+    return True
+
+def howl():
+    edu.xgoSpeaker("sounds/howl.mp3")
+    return True
+
+def growl():
+    edu.xgoSpeaker("sounds/growl.mp3")
+    return True
+
+def sleep():
+    edu.xgoSpeaker("sounds/sleep.mp3")
+    return True
 
