@@ -110,7 +110,7 @@ async def handler(websocket):
 		print("Client disconnected")
 		connected_clients.remove(websocket)
 	
-		
+	
 
 async def main():
 	
