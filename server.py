@@ -3,6 +3,7 @@ import subprocess
 subprocess.run(["sudo","pkill","-f","main.py"])
 
 import os,time,sys,serial,websocket,json,asyncio,websockets,socket
+import multiprocessing as mp
 from xgolib import XGO
 from robotAPI import edu
 import sys, socket, robotAPI
@@ -17,67 +18,175 @@ version = dog.read_firmware()
 dog_type = 'L'
 
 
+connected_clients = set()
+current_execution = None #Processo unico de execução do codigo recebido
+
+PROGRAMS_PATH = "/home/pi/Desktop/Dissertation/programs"
+showing_programs = False
+selected_program = 0
+
 
 print("*****************************************")
 print("*************XGO-LITE-SERVER*************")
 print("*****************************************")
 
-async def display_battery():
+def draw_main_info():
+	print("Clearing LCD")
+	edu.lcd_clear()
+	#Hostname do robo e IP tambem
+	ip = os.popen("hostname -I").read().strip().split()[0]
+	edu.lcd_rectangle(0, 25, 320, 200, fill=(0, 0, 0), outline=(0, 0, 0))  
+	edu.lcd_text(90, 60, "XGOBOT", color=(0, 155, 255), fontsize=35)
+
+	ip_x = int((320 - len(ip) * 12) / 2)
+	edu.lcd_text(ip_x, 180, ip, color=(255,255,255), fontsize = 24)
+	
+	
+	battery = dog.read_battery()
+	print(battery)
+	if str(battery) == '0':
+		print('uart error')
+	else:
+		# limpa a área
+		edu.lcd_rectangle(255, 2, 318, 20, fill=(0, 0, 0), outline=(0, 0, 0))
+		
+		# retangulo da borda da bateria e polo
+		edu.lcd_rectangle(257, 2, 312, 20, fill=None, outline=(255, 255, 255), width=2)
+		edu.lcd_rectangle(312, 7, 317, 15, fill=(255, 255, 255), outline=(255, 255, 255))
+		
+		# preenchimento verde/vermelho
+		fill_width = int(49 * battery / 100)
+		bar_color = (0, 180, 0) if battery > 20 else (255, 0, 0)
+		edu.lcd_rectangle(259, 4, 259 + fill_width, 18, fill=bar_color, outline=bar_color)
+		
+		# percentagem da bateria
+		edu.lcd_text(265, 3, f"{battery}%", color=(255, 255, 255), fontsize=12)
+
+async def display_main_info():
     
 	while True:
 		try:
-			print("Clearing LCD")
-			edu.lcd_clear()
-
-			ip = os.popen("hostname -I").read().strip().split()[0]
-			edu.lcd_rectangle(0, 25, 320, 200, fill=(0, 0, 0), outline=(0, 0, 0))  
-			edu.lcd_text(90, 60, "XGOBOT", color=(0, 155, 255), fontsize=35)
-   
-			ip_x = int((320 - len(ip) * 12) / 2)
-			edu.lcd_text(ip_x, 180, ip, color=(255,255,255), fontsize = 24)
-			
-			
-			battery = dog.read_battery()
-			print(battery)
-			if str(battery) == '0':
-				print('uart error')
-			else:
-				# limpa a área
-				edu.lcd_rectangle(255, 2, 318, 20, fill=(0, 0, 0), outline=(0, 0, 0))
-                
-				# retangulo da borda da bateria e polo
-				edu.lcd_rectangle(257, 2, 312, 20, fill=None, outline=(255, 255, 255), width=2)
-				edu.lcd_rectangle(312, 7, 317, 15, fill=(255, 255, 255), outline=(255, 255, 255))
-                
-                # preenchimento verde/vermelho
-				fill_width = int(49 * battery / 100)
-				bar_color = (0, 180, 0) if battery > 20 else (255, 0, 0)
-				edu.lcd_rectangle(259, 4, 259 + fill_width, 18, fill=bar_color, outline=bar_color)
-                
-                # percentagem da bateria
-				edu.lcd_text(265, 3, f"{battery}%", color=(255, 255, 255), fontsize=12)
-                
+			draw_main_info()                
 		except Exception as e:
 			print(e)
                
-		await asyncio.sleep(180)
-        
-    
-def display_info():
-    ip = os.popen("hostname -I").read().strip().split()[0]
-    
-    edu.lcd_rectangle(0, 25, 320, 200, fill=(0, 0, 0), outline=(0, 0, 0))  
-    edu.lcd_text(90, 60, "XGOBOT", color=(0, 155, 255), fontsize=35)
-   
-    ip_x = int((320 - len(ip) * 12) / 2)
-    edu.lcd_text(ip_x, 180, ip, color=(255,255,255), fontsize = 24)
+		await asyncio.sleep(240)
 
+def get_programs():
+	files = [f for f in os.listdir(PROGRAMS_PATH) if f.endswith('.py') and f not in ('robotAPI.py',)]
     
-    
-    
-connected_clients = set()
+	return sorted(files)
+	
+	
+def show_programs():
+	programs = get_programs()
+	edu.lcd_clear()
+
+    # Header
+	edu.lcd_rectangle(0, 0, 320, 28, fill=(0, 50, 100), outline=(0, 50, 100))
+	edu.lcd_text(10, 0, "Programs", color=(255, 255, 255), fontsize=20)
+
+	# Lista dos programas
+	start = max(0, selected_program - 2)
+	visible = programs[start:start + 6]
+
+	for i, filename in enumerate(visible):
+		y = 35 + i * 30
+		real_idx = start + i
+		is_selected = real_idx == selected_program
+		name = filename.replace('.py', '')
+
+		if is_selected:
+			edu.lcd_rectangle(0, y, 320, y + 28, fill=(0, 100, 200), outline=(0, 100, 200))
+
+		color = (255, 255, 255) if is_selected else (180, 180, 180)
+		edu.lcd_text(12, y + 6, name, color=color, fontsize=16)
+
+    # Info dos botoes
+	edu.lcd_rectangle(0, 215, 320, 240, fill=(0, 30, 60), outline=(0, 30, 60))
+	edu.lcd_text(5, 221, "B: UP   D: DOWN   C: Execute   A: Back", color=(150, 150, 150), fontsize=12)
+	
+
+async def buttons_actions():    
+	global selected_program, showing_programs, current_execution
+	
+	while True:
+		is_running = current_execution is not None and current_execution.is_alive()
+		
+		if (edu.xgoButton("a") and not is_running):
+			showing_programs = not showing_programs
+			
+			if(showing_programs):
+				selected_program = 0
+				show_programs()
+			else:
+				showing_programs = False
+				draw_main_info()
+			await asyncio.sleep(0.5)
+		
+		if(showing_programs and not is_running):
+			programs = get_programs()
+			
+			if(edu.xgoButton("b")):
+				selected_program = max(0, selected_program - 1)
+				show_programs()
+				await asyncio.sleep(0.5)
+			
+			
+			elif(edu.xgoButton("d")):
+				selected_program = min(len(programs) - 1, selected_program + 1)
+				show_programs()
+				await asyncio.sleep(0.25)
+			
+			elif(edu.xgoButton("c")):
+				path = os.path.join(PROGRAMS_PATH, programs[selected_program])
+				showing_programs = False
+				edu.lcd_clear()	
+				
+				
+				#falta ainda a logica de correr
+				
+				
+				
+				
+		await asyncio.sleep(0.1)	
+
+
+def kill_current_execution():
+	global current_execution
+	
+	if current_execution != None and current_execution.is_alive():
+		current_execution.terminate()
+		
+	current_execution = None
+	
+#executa o codigo recebido ()
+def execute_code(code):
+	try:
+		exec(code)
+	except Exception as e:
+		print(f"Error executing code: {e}")
+		
+#monitora a execução do codigo e verifica se foi terminado ou se houve algum tipo de erro
+async def execution_monitor(websocket):
+	global current_execution
+	
+	while current_execution is not None and current_execution.is_alive():
+		await asyncio.sleep(0.3)
+	
+	if current_execution is not None and current_execution.exitcode == 0:
+		print("execucao feita")
+		try:
+			await websocket.send(json.dumps({
+				"type": "execution_finished"
+			}))
+		except:
+			pass
+	current_execution = None
 
 async def handler(websocket):
+	global current_execution
+	
 	if(len(connected_clients) >= 1):
 		print("A different client is already connected, closing connection...")
 		await websocket.close()
@@ -93,11 +202,19 @@ async def handler(websocket):
 			data = json.loads(message)
 			
 			try:
-				if(data.get("type") == "python_code"):
+				#Cria sempre um processo paralelo, para que possa ser interrompido
+				if((data.get("type") == "python_code") and (not showing_programs)):
 					code = data["code"]
-					exec(code)
 					
+					kill_current_execution()
+					current_execution = mp.Process(target = execute_code, args=(code,), daemon=True)
+					current_execution.start()
+					asyncio.create_task(execution_monitor(websocket))
 					
+				if((data.get("type") == "cancel_execution") and (not showing_programs)):
+					kill_current_execution()
+					
+							
 			except json.JSONDecodeError:
 				print("Invalid JSON")
 				
@@ -109,16 +226,17 @@ async def handler(websocket):
 	finally:
 		print("Client disconnected")
 		connected_clients.remove(websocket)
-	
-	
+
+
 
 async def main():
 	
 	print("Starting websocket server...")
 	server = await websockets.serve(handler, "0.0.0.0", 8765)
 	print("Websocket server ready and listening on port: 8765!")
-	#display_info()
-	asyncio.create_task(display_battery())
+	
+	asyncio.create_task(display_main_info())
+	asyncio.create_task(buttons_actions())
 	
 	await asyncio.Future()
 
