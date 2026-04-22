@@ -17,6 +17,7 @@ dog = XGO(port='/dev/ttyAMA0', version='xgolite')
 version = dog.read_firmware()
 dog_type = 'L'
 
+MAIN_SCREEN_REFRESH_TIME = 240
 
 connected_clients = set()
 current_execution = None #Processo unico de execução do codigo recebido
@@ -70,7 +71,8 @@ async def display_main_info():
 		except Exception as e:
 			print(e)
                
-		await asyncio.sleep(240)
+		await asyncio.sleep(MAIN_SCREEN_REFRESH_TIME)
+
 
 def get_programs():
 	files = [f for f in os.listdir(PROGRAMS_PATH) if f.endswith('.py') and f not in ('robotAPI.py',)]
@@ -102,7 +104,7 @@ def show_programs():
 		color = (255, 255, 255) if is_selected else (180, 180, 180)
 		edu.lcd_text(12, y + 6, name, color=color, fontsize=16)
 
-    # Info dos botoes
+    # Info dos botoes (controls)
 	edu.lcd_rectangle(0, 215, 320, 240, fill=(0, 30, 60), outline=(0, 30, 60))
 	edu.lcd_text(5, 221, "B: UP   D: DOWN   C: Execute   A: Back", color=(150, 150, 150), fontsize=12)
 	
@@ -140,14 +142,15 @@ async def buttons_actions():
 			
 			elif(edu.xgoButton("c")):
 				path = os.path.join(PROGRAMS_PATH, programs[selected_program])
-				showing_programs = False
+				
 				edu.lcd_clear()	
 				
+				with open(path, 'r') as f:
+					codigo = f.read()
 				
-				#falta ainda a logica de correr
-				
-				
-				
+				exec(codigo)
+				showing_programs = False
+				draw_main_info()
 				
 		await asyncio.sleep(0.1)	
 
@@ -183,6 +186,23 @@ async def execution_monitor(websocket):
 		except:
 			pass
 	current_execution = None
+	
+#guarda o ficheiro na pasta do robô
+def save_file(code, filename):
+	path = os.path.join(PROGRAMS_PATH, filename)
+	name, py = os.path.splitext(filename)
+	
+	if os.path.exists(path):
+		counter = 1
+		while os.path.exists(os.path.join(PROGRAMS_PATH, f"{name} ({counter}){py}")):
+			counter += 1
+		
+		path = os.path.join(PROGRAMS_PATH, f"{name} ({counter}){py}")
+	
+	with open(path, 'w') as f:
+		f.write(code)
+		
+	return os.path.basename(path)
 
 async def handler(websocket):
 	global current_execution
@@ -202,6 +222,7 @@ async def handler(websocket):
 			data = json.loads(message)
 			
 			try:
+					
 				#Cria sempre um processo paralelo, para que possa ser interrompido
 				if((data.get("type") == "python_code") and (not showing_programs)):
 					code = data["code"]
@@ -214,6 +235,25 @@ async def handler(websocket):
 				if((data.get("type") == "cancel_execution") and (not showing_programs)):
 					kill_current_execution()
 					
+				if((data.get("type") == "upload_code")):
+					
+					try:
+					
+						code = data["code"]
+						filename = f"{data.get('file_name')}.py"
+						
+						saved_file = save_file(code, filename)
+						await websocket.send(json.dumps({
+							"type": "upload_success",
+							"file_name": saved_file
+						}))
+						
+					except Exception as e:
+						await websocket.send(json.dumps({
+							"type": "upload_error",
+							"message": str(e)
+						}))
+						
 							
 			except json.JSONDecodeError:
 				print("Invalid JSON")
