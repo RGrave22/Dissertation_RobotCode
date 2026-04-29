@@ -25,6 +25,7 @@ current_execution = None #Processo unico de execução do codigo recebido
 PROGRAMS_PATH = "/home/pi/Desktop/Dissertation/programs"
 showing_programs = False
 selected_program = 0
+deleting_program = False
 
 
 print("*****************************************")
@@ -103,20 +104,38 @@ def show_programs():
 
 		color = (255, 255, 255) if is_selected else (180, 180, 180)
 		edu.lcd_text(12, y + 6, name, color=color, fontsize=16)
-
-    # Info dos botoes (controls)
-	edu.lcd_rectangle(0, 215, 320, 240, fill=(0, 30, 60), outline=(0, 30, 60))
-	edu.lcd_text(5, 221, "B: UP   D: DOWN   C: Execute   A: Back", color=(150, 150, 150), fontsize=12)
-	
+		
+	if not deleting_program:
+		# Info dos botoes (controls)
+		edu.lcd_rectangle(0, 215, 320, 240, fill=(0, 30, 60), outline=(0, 30, 60))
+		edu.lcd_text(5, 221, "B: UP   D: DOWN   C: Execute   A: Back", color=(150, 150, 150), fontsize=12)
+	else:
+		edu.lcd_rectangle(0, 215, 320, 240, fill=(0, 30, 60), outline=(0, 30, 60))
+		edu.lcd_text(5, 221, "B: UP   D: DOWN   C: Delete   A: Back", color=(150, 150, 150), fontsize=12)
 
 async def buttons_actions():    
-	global selected_program, showing_programs, current_execution
+	global selected_program, showing_programs, current_execution, deleting_program
+	confirming_delete = False
 	
 	while True:
 		is_running = current_execution is not None and current_execution.is_alive()
 		
 		if (edu.xgoButton("a") and not is_running):
 			showing_programs = not showing_programs
+			deleting_program = False
+			confirming_delete = False
+			
+			if(showing_programs):
+				selected_program = 0
+				show_programs()
+			else:
+				showing_programs = False
+				draw_main_info()
+			await asyncio.sleep(0.5)
+			
+		if (edu.xgoButton("c") and not is_running and not showing_programs):
+			showing_programs = not showing_programs
+			deleting_program = True
 			
 			if(showing_programs):
 				selected_program = 0
@@ -129,31 +148,74 @@ async def buttons_actions():
 		if(showing_programs and not is_running):
 			programs = get_programs()
 			
-			if(edu.xgoButton("b")):
-				selected_program = max(0, selected_program - 1)
-				show_programs()
-				await asyncio.sleep(0.5)
-			
-			
-			elif(edu.xgoButton("d")):
+			if(edu.xgoButton("b") and not confirming_delete):
+					selected_program = max(0, selected_program - 1)
+					show_programs()
+					await asyncio.sleep(0.5)
+				
+				
+			elif(edu.xgoButton("d") and not confirming_delete):
 				selected_program = min(len(programs) - 1, selected_program + 1)
 				show_programs()
 				await asyncio.sleep(0.25)
 			
-			elif(edu.xgoButton("c")):
-				path = os.path.join(PROGRAMS_PATH, programs[selected_program])
+			if not deleting_program:
 				
-				edu.lcd_clear()	
+				if(edu.xgoButton("c")):
+					path = os.path.join(PROGRAMS_PATH, programs[selected_program])
+					
+					edu.lcd_clear()	
+					
+					with open(path, 'r') as f:
+						codigo = f.read()
+					
+					exec(codigo)
+					showing_programs = False
+					draw_main_info()
+			else:
 				
-				with open(path, 'r') as f:
-					codigo = f.read()
+				if not confirming_delete:
+					if edu.xgoButton("c"):          
+						confirming_delete = True
+						show_delete_confirm(programs[selected_program])
+						await asyncio.sleep(0.5)
+				else:
+					
+					if edu.xgoButton("c"):
+						path = os.path.join(PROGRAMS_PATH, programs[selected_program])
+						os.remove(path)
+						confirming_delete = False
+						programs = get_programs()
+						selected_program = max(0, min(selected_program, len(programs) - 1))
+                        
+						if programs:
+							show_programs()
+						else:
+							showing_programs = False
+							deleting_program = False
+							draw_main_info()
+                        
+						await asyncio.sleep(0.5)
+                    
+					elif edu.xgoButton("b") or edu.xgoButton("d"):
+						confirming_delete = False
+						show_programs()
+						await asyncio.sleep(0.5)
 				
-				exec(codigo)
-				showing_programs = False
-				draw_main_info()
 				
 		await asyncio.sleep(0.1)	
 
+def show_delete_confirm(program_name):
+    edu.lcd_clear()
+    name = program_name.replace('.py', '')
+    if len(name) > 18:
+        name = name[:15] + "..."
+    
+    edu.lcd_rectangle(0, 0, 320, 28, fill=(120, 0, 0), outline=(120, 0, 0))
+    edu.lcd_text(10, 4, "Delete program?", color=(255, 255, 255), fontsize=18)
+    edu.lcd_text(10, 45, name, color=(255, 220, 0), fontsize=16)
+    edu.lcd_rectangle(0, 215, 320, 240, fill=(0, 30, 60), outline=(0, 30, 60))
+    edu.lcd_text(5, 221, "C: Confirm         B/D: Cancel", color=(150, 150, 150), fontsize=12)
 
 def kill_current_execution():
 	global current_execution
@@ -163,7 +225,7 @@ def kill_current_execution():
 		
 	current_execution = None
 	
-#executa o codigo recebido ()
+#executa o codigo recebido
 def execute_code(code):
 	try:
 		exec(code)
@@ -186,6 +248,8 @@ async def execution_monitor(websocket):
 		except:
 			pass
 	current_execution = None
+
+
 	
 #guarda o ficheiro na pasta do robô
 def save_file(code, filename):
@@ -203,6 +267,7 @@ def save_file(code, filename):
 		f.write(code)
 		
 	return os.path.basename(path)
+
 
 async def handler(websocket):
 	global current_execution

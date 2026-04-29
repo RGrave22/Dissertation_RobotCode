@@ -1,0 +1,16 @@
+0000000000000000000000000000000000000000 1f32ec5dc5b90633306fb8981188e0dccf418aa7 RGrave22 <r.grave@campus.fct.unl.pt> 1773336826 +0000	commit (initial): first commit
+1f32ec5dc5b90633306fb8981188e0dccf418aa7 9fae0806a822b4c9e40ec2f2f122a9427dac20a9 RGrave22 <r.grave@campus.fct.unl.pt> 1773338584 +0000	commit: ficheiros python robo
+9fae0806a822b4c9e40ec2f2f122a9427dac20a9 5b6d17df0b3eca4e6d04c6862971cb1a82de3758 RGrave22 <r.grave@campus.fct.unl.pt> 1773404976 +0000	commit: inicio da robot api
+5b6d17df0b3eca4e6d04c6862971cb1a82de3758 85794f418c7b6b8e51a477d01c7b287b8f6aca9c RGrave22 <r.grave@campus.fct.unl.pt> 1773747546 +0000	pull: Fast-forward
+85794f418c7b6b8e51a477d01c7b287b8f6aca9c 7ecb8320926b0418a2d9e612c6cded127ddb873d RGrave22 <r.grave@campus.fct.unl.pt> 1773761387 +0000	commit: mais uns passos e testes
+7ecb8320926b0418a2d9e612c6cded127ddb873d c66a819fd1c3c6b2455e706045a2e746a01aa794 RGrave22 <r.grave@campus.fct.unl.pt> 1773850094 +0000	commit: mais uns testes e mudanças no ecra
+c66a819fd1c3c6b2455e706045a2e746a01aa794 63ef22db92f961543b6b1535b7b2f561c93af10e RGrave22 <r.grave@campus.fct.unl.pt> 1773850919 +0000	commit: tweak
+63ef22db92f961543b6b1535b7b2f561c93af10e 9829fd3d89a518a801dd1bf940afe96e96060b9b RGrave22 <r.grave@campus.fct.unl.pt> 1774373408 +0000	commit: mais uns progressos
+9829fd3d89a518a801dd1bf940afe96e96060b9b b6c2a9c2a86f3ca1ab32cc0be07810bccc948836 RGrave22 <r.grave@campus.fct.unl.pt> 1774451858 +0000	commit: tail_whip e outros toques
+b6c2a9c2a86f3ca1ab32cc0be07810bccc948836 f0129ce7dc4dcdd32662987e855e320560853d09 RGrave22 <r.grave@campus.fct.unl.pt> 1774529705 +0000	commit: mais umas mudanças
+f0129ce7dc4dcdd32662987e855e320560853d09 a9ccee81f477e82ea67d164759c5e6d1b723ba9d RGrave22 <r.grave@campus.fct.unl.pt> 1774544926 +0000	commit: mais uns toques, imagens a funcionar, em principio braço beginer ta
+a9ccee81f477e82ea67d164759c5e6d1b723ba9d 88f9c9562e345a397039172fe1f726d5ab993b8d RGrave22 <r.grave@campus.fct.unl.pt> 1775748789 +0100	commit: mais passos, faltam o audio para o primeiro nivel
+88f9c9562e345a397039172fe1f726d5ab993b8d b3080292f5b13bb60f5a720c47c41fbb5b832577 RGrave22 <r.grave@campus.fct.unl.pt> 1776183180 +0100	commit: mais uns toques, primeiro nivel esta todo
+b3080292f5b13bb60f5a720c47c41fbb5b832577 0cd8a63be8e016d16e812b04bef27eda5bafd0c7 RGrave22 <r.grave@campus.fct.unl.pt> 1776261197 +0100	commit: CheckPoint antes de fazer a parte da execução parar
+0cd8a63be8e016d16e812b04bef27eda5bafd0c7 03d5999e5b4a60562a333ba26ab46fdd22ed3977 RGrave22 <r.grave@campus.fct.unl.pt> 1776359413 +0100	commit: execução ja pode ser travada, e tambem já há menu :) com os programas locais, falta fazer a parte de executar os programas definidos, e falta também poder dar upload do site para o robo
+03d5999e5b4a60562a333ba26ab46fdd22ed3977 8fa004bea00905e0ae43a051859dd89791664d56 RGrave22 <r.grave@campus.fct.unl.pt> 1776869739 +0100	commit: execução dos programas no robo feita, ja podemos dar upload do site para o robo e rodar diretamente no robo, falta apenas ver a questao de como eliminar o programa do robo :)

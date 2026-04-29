@@ -12,10 +12,18 @@ edu= XGOEDU()
 #========================================
 #				Movement
 #========================================
-def move(direction, steps):
-	dog.pace("slow")
+def move(direction, steps, pace):
+	dog.pace(pace)
 	stepSize = 10 # valor default definido
-	stepsFreq = 2.0 # o robo no modo slow da 2 passos por s
+	
+	paceMap = {
+		"slow": 2.0,
+		"normal": 4.0,
+		"high": 6.0,
+		
+	}
+	
+	stepsFreq = paceMap.get(pace.lower())
 	
 	timeToSleep = steps * (1.0/stepsFreq)
 	
@@ -36,26 +44,6 @@ def move(direction, steps):
 	time.sleep(0.5)
 	
 
-def rotate(direction, angle):
-	anglePerSec = 30
-	
-	timeToSleep = angle / anglePerSec
-	
-	dirMap = {
-		"l":  1,
-		"r": -1,
-	}
-	
-	dr = dirMap.get(direction.lower())
-	step = anglePerSec * dr
-	
-	dog.turn(step)
-	time.sleep(timeToSleep)
-	dog.stop()
-	time.sleep(0.5)
-	
-	
-	
 def rotateWithYaw(direction, angle):
 	dog.reset()
 	yaw_init = dog.read_yaw()
@@ -86,7 +74,9 @@ def rotateWithYaw(direction, angle):
 	
 	
 
-def walk_in_place(legHeight, timeToSleep):
+def walk_in_place(legHeight, timeToSleep, pace):
+	
+	dog.pace(pace)
 	
 	dog.mark_time(legHeight)
 	time.sleep(timeToSleep)
