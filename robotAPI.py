@@ -239,6 +239,36 @@ def sit():
 	time.sleep(2)
 	
 
+def periodic_translation(direction, period, time_to_sleep):
+	
+	periodMap = {
+        "slow": 8,  
+        "medium": 4,  
+        "fast": 1.5,
+	}
+    
+	pace = periodMap[period.lower()]
+    
+	dog.periodic_tran(direction, pace)
+	time.sleep(time_to_sleep)
+	dog.periodic_tran(direction, 0)
+
+def periodic_rotation(direction, period, time_to_sleep):
+	
+	periodMap = {
+        "slow": 8,  
+        "medium": 4,  
+        "fast": 1.5, 
+	}
+    
+	pace = periodMap[period.lower()]
+    
+	dog.periodic_rot(direction, pace)
+	time.sleep(time_to_sleep)
+	dog.periodic_rot(direction, 0)
+        
+    
+	
 
 #========================================
 #				   Arm

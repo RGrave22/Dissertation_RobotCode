@@ -80,15 +80,15 @@ def smooth_wave(reps=4):
 	
 def main():
 	dog.reset()
-	dog.pace("slow")
+	#dog.pace("slow")
 	
 	
+	#robotAPI.body_translation("z",120)
+	dog.action(11)
 	
-	
-	
-	dog.mark_time(35 )
+	#dog.mark_time(35 )
 	time.sleep(1)
-	dog.mark_time(0)
+	#dog.mark_time(0)
 	
 	print(dog.read_battery())
 	
