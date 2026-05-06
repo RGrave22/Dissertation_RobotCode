@@ -328,6 +328,10 @@ def handshake():
 	time.sleep(1)
 	dog.reset()
 	
+def reset_arm():
+	dog.arm_mode(0)
+	arm_position(-40,28)
+	
 
 
 #def reset_arm():
@@ -380,6 +384,22 @@ def scared_face():
 def tongue_face():
 	edu.lcd_clear()
 	edu.lcd_picture("faces/tongue_face.png", 5, 0)	
+	
+	
+def draw_line(x1, y1, x2, y2, color=(255, 255, 255), width=1):
+    edu.lcd_line(x1, y1, x2, y2, color=color, width=width)
+
+def draw_arc(x1, y1, x2, y2, angle0, angle1, color=(255, 255, 255), width=1):
+    edu.lcd_circle(x1, y1, x2, y2, angle0, angle1, color=color, width=width)
+
+def draw_rectangle(x1, y1, x2, y2, fill=None, outline=(255, 255, 255), width=1):
+    edu.lcd_rectangle(x1, y1, x2, y2, fill=fill, outline=outline, width=width)
+
+def draw_text(x, y, content, color=(255, 255, 255), fontsize=16):
+    edu.lcd_text(x, y, content, color=color, fontsize=fontsize)
+    
+def screen_clear():
+	edu.lcd_clear()
 
 #========================================
 #				   AI (Recognition)
@@ -414,6 +434,21 @@ def detect_ok():
 	edu.lcd_clear()
 	return False
 	
+def detect_number(number):
+	start = time.time()	
+	while time.time() - start < 20:
+		result = edu.gestureRecognition()
+		print(result)
+		
+		if result != None:
+			numb, (x,y) = result
+			if int(numb) == number:
+				time.sleep(2)
+				edu.lcd_clear()
+				return True
+	edu.lcd_clear()
+	return False
+	
 def detect_happy():
 	start = time.time()	
 	while time.time() - start < 20:
@@ -441,6 +476,71 @@ def detect_sad():
 				time.sleep(2)
 				edu.lcd_clear()
 				return True
+	edu.lcd_clear()
+	return False
+	
+def detect_angry():
+	start = time.time()	
+	while time.time() - start < 20:
+		result = edu.emotion()
+		print(result)
+		
+		if result != None:
+			emotion, (x,y) = result
+			if emotion == "Angry":
+				time.sleep(2)
+				edu.lcd_clear()
+				return True
+	edu.lcd_clear()
+	return False
+
+def detect_neutral():
+	start = time.time()	
+	while time.time() - start < 20:
+		result = edu.emotion()
+		print(result)
+		
+		if result != None:
+			emotion, (x,y) = result
+			if emotion == "Neutral":
+				time.sleep(2)
+				edu.lcd_clear()
+				return True
+	edu.lcd_clear()
+	return False
+	
+#Deteta apos ter 3 valores iguais seguidos, se nao detetar, segue
+def detect_age(interval, inside):
+	start = time.time()	
+	confirmation = 0
+	isInside = str(inside).lower() == "true"
+	
+	while time.time() - start < 20:
+		result = edu.agesex()
+		print(result)
+		
+		if result != None:
+			sex, age, (x,y) = result
+			
+			if(isInside):
+				
+				if (age == interval):
+					confirmation += 1
+				else:
+					confirmation = 0
+					
+			else:	
+					
+				if (age != interval):
+					confirmation += 1
+				else:
+					confirmation = 0
+			
+			if confirmation >= 3:
+				time.sleep(2)
+				edu.lcd_clear()
+				return True
+				
 	edu.lcd_clear()
 	return False
 
