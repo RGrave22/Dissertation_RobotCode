@@ -76,26 +76,32 @@ def smooth_wave(reps=4):
     dog.reset()
 	
 
+def give_paw():
+	dog.reset()
 	
+	dog.translation("x", -35)
+	dog.attitude("p", -20)
+	robotAPI.leg_motor("bl", "b", -25)
+	robotAPI.leg_motor("br", "b", -25)
+	robotAPI.leg_motor("bl", "m", 60)
+	robotAPI.leg_motor("br", "m", 60)
+	robotAPI.leg_motor("fl", "b", 43)
+	robotAPI.leg_motor("fr", "b", 43)
+	dog.motor([13,23], [-5, -5])
+	time.sleep(1)
+	dog.motor(12, -20)
+	time.sleep(0.5)
+	dog.motor(11, 0)
+	time.sleep(3)
+	dog.motor(12, 20)
+	time.sleep(0.5)
+	dog.reset()
 	
 def main():
-	dog.reset()
-	#dog.pace("slow")
-	robotAPI.arm_position(120,0)
-	dog.arm_mode(1)
-	#robotAPI.body_attitude("pb",12)
-	
-	robotAPI.body_translation("f",12)
-	robotAPI.body_translation("b",12)
-	robotAPI.body_translation("b",18)
+	dog.reset()	
+	give_paw()
 	
 	
-	
-	robotAPI.reset_arm()
-	
-	#dog.mark_time(35 )
-	time.sleep(1)
-	#dog.mark_time(0)
 	
 	print(dog.read_battery())
 	

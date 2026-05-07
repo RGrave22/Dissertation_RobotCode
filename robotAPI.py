@@ -136,7 +136,7 @@ def leg(leg, x, y, z):
     dog.leg(leg_id, [x, y, z])
     #time.sleep(1)
     
-    
+
 def leg_motor(leg_str, motor, value):
     legMap = {
         "fl": 1,
@@ -160,27 +160,33 @@ def leg_motor(leg_str, motor, value):
     #time.sleep(1)
    
 
-#AINDA SEM BLOCO
-def push_ups(value):
+#AINDA SEM BLOCO INDIVIUAl
+def pushups():
+	dog.motor(31, 73)
+	dog.motor(41, 73)
+	dog.motor(32, 93)
+	dog.motor(42, 93)
+	time.sleep(1)
 	
-	dog.leg(3, [0, 0, 80])   
-	dog.leg(4, [0, 0, 80]) 
-	time.sleep(0.6) 
-	
-	for _ in range(value):
+	for _ in range(5):
+		dog.motor(12, 45)
+		dog.motor(22, 45)
+		dog.motor(11, 30)
+		dog.motor(21, 30)
+		time.sleep(1.5)
 		
-		# DESCER
-		time.sleep(0.2)
-		dog.leg(1, [0, 0, 75])
-		dog.leg(2, [0, 0, 75])  
-		time.sleep(0.4)
+		dog.motor(12, 90)
+		dog.motor(22, 90)
+		dog.motor(11, -20)
+		dog.motor(21, -20)
+		time.sleep(1.5)
 
-		#SUBIR
-		dog.leg(1, [0, 0, 90])
-		dog.leg(2, [0, 0, 90])
-		time.sleep(0.4)
-
+	time.sleep(0.5)
 	dog.reset()
+	
+def wave():
+	dog.action(13)
+	time.sleep(7)
 	
 
 def worm_dance(sleep):
@@ -218,9 +224,6 @@ def lie_down(sleep):
 	dog.motor(22, 80)
 	dog.motor(11, -38)
 	dog.motor(21, -38)
-	
-	#dog.motor(33, 31)
-	#dog.motor(43, 31) Ver ainda quais fazem mais sentido
 	dog.motor(13, 31)
 	dog.motor(43, 31)
 	
@@ -238,6 +241,80 @@ def sit():
 	leg_motor("fr", "b", 43)
 	time.sleep(2)
 	
+def give_paw():
+	dog.reset()
+	
+	dog.translation("x", -35)
+	dog.attitude("p", -20)
+	robotAPI.leg_motor("bl", "b", -25)
+	robotAPI.leg_motor("br", "b", -25)
+	robotAPI.leg_motor("bl", "m", 60)
+	robotAPI.leg_motor("br", "m", 60)
+	robotAPI.leg_motor("fl", "b", 43)
+	robotAPI.leg_motor("fr", "b", 43)
+	dog.motor([13,23], [-5, -5])
+	time.sleep(1)
+	dog.motor(12, -20)
+	time.sleep(0.5)
+	dog.motor(11, 0)
+	time.sleep(3)
+	dog.motor(12, 20)
+	time.sleep(0.5)
+	dog.reset()
+	
+def paw_wave():
+	dog.reset()
+	
+	dog.translation("x", -35)
+	dog.attitude("p", -20)
+	leg_motor("bl", "b", -25)
+	leg_motor("br", "b", -25)
+	leg_motor("bl", "m", 60)
+	leg_motor("br", "m", 60)
+	leg_motor("fl", "b", 43)
+	leg_motor("fr", "b", 43)
+	dog.motor([13,23], [-5,-5])
+	time.sleep(2)
+	
+	for _ in range(4):
+		
+		dog.motor([12, 11], [-50,-65])
+		time.sleep(1)
+		dog.motor([12, 11], [40,43])
+		
+		time.sleep(0.7)
+        
+		dog.motor([22, 21], [-50,-65])
+		time.sleep(1)
+		dog.motor([22, 21], [40,43])
+		time.sleep(0.7)
+		
+	dog.reset()
+	
+def salsa_dance():
+	dog.reset()
+	time.sleep(0.5)
+    
+	for _ in range(6):
+		dog.translation("y", 20)
+		dog.attitude("r", 15)
+		time.sleep(0.5)
+        
+		dog.translation("y", 0)
+		dog.attitude("r", 0)
+		time.sleep(0.3)
+        
+        
+		dog.translation("y", -20)
+		dog.attitude("r", -15)
+		time.sleep(0.5)
+        
+        
+		dog.translation("y", 0)
+		dog.attitude("r", 0)
+		time.sleep(0.3)
+    
+	dog.reset()
 
 def periodic_translation(direction, period, time_to_sleep):
 	
@@ -267,9 +344,6 @@ def periodic_rotation(direction, period, time_to_sleep):
 	time.sleep(time_to_sleep)
 	dog.periodic_rot(direction, 0)
         
-    
-	
-
 #========================================
 #				   Arm
 #========================================
