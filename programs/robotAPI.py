@@ -12,10 +12,18 @@ edu= XGOEDU()
 #========================================
 #				Movement
 #========================================
-def move(direction, steps):
-	dog.pace("slow")
+def move(direction, steps, pace):
+	dog.pace(pace)
 	stepSize = 10 # valor default definido
-	stepsFreq = 2.0 # o robo no modo slow da 2 passos por s
+	
+	paceMap = {
+		"slow": 2.0,
+		"normal": 4.0,
+		"high": 6.0,
+		
+	}
+	
+	stepsFreq = paceMap.get(pace.lower())
 	
 	timeToSleep = steps * (1.0/stepsFreq)
 	
@@ -36,26 +44,6 @@ def move(direction, steps):
 	time.sleep(0.5)
 	
 
-def rotate(direction, angle):
-	anglePerSec = 30
-	
-	timeToSleep = angle / anglePerSec
-	
-	dirMap = {
-		"l":  1,
-		"r": -1,
-	}
-	
-	dr = dirMap.get(direction.lower())
-	step = anglePerSec * dr
-	
-	dog.turn(step)
-	time.sleep(timeToSleep)
-	dog.stop()
-	time.sleep(0.5)
-	
-	
-	
 def rotateWithYaw(direction, angle):
 	dog.reset()
 	yaw_init = dog.read_yaw()
@@ -86,7 +74,9 @@ def rotateWithYaw(direction, angle):
 	
 	
 
-def walk_in_place(legHeight, timeToSleep):
+def walk_in_place(legHeight, timeToSleep, pace):
+	
+	dog.pace(pace)
 	
 	dog.mark_time(legHeight)
 	time.sleep(timeToSleep)
@@ -146,7 +136,7 @@ def leg(leg, x, y, z):
     dog.leg(leg_id, [x, y, z])
     #time.sleep(1)
     
-    
+
 def leg_motor(leg_str, motor, value):
     legMap = {
         "fl": 1,
@@ -170,34 +160,39 @@ def leg_motor(leg_str, motor, value):
     #time.sleep(1)
    
 
-#AINDA SEM BLOCO
-def push_ups(value):
+def pushups():
+	dog.motor(31, 73)
+	dog.motor(41, 73)
+	dog.motor(32, 93)
+	dog.motor(42, 93)
+	time.sleep(1)
 	
-	dog.leg(3, [0, 0, 80])   
-	dog.leg(4, [0, 0, 80]) 
-	time.sleep(0.6) 
-	
-	for _ in range(value):
+	for _ in range(5):
+		dog.motor(12, 45)
+		dog.motor(22, 45)
+		dog.motor(11, 30)
+		dog.motor(21, 30)
+		time.sleep(1.5)
 		
-		# DESCER
-		time.sleep(0.2)
-		dog.leg(1, [0, 0, 75])
-		dog.leg(2, [0, 0, 75])  
-		time.sleep(0.4)
+		dog.motor(12, 90)
+		dog.motor(22, 90)
+		dog.motor(11, -20)
+		dog.motor(21, -20)
+		time.sleep(1.5)
 
-		#SUBIR
-		dog.leg(1, [0, 0, 90])
-		dog.leg(2, [0, 0, 90])
-		time.sleep(0.4)
-
+	time.sleep(0.5)
 	dog.reset()
+	
+def wave():
+	dog.action(13)
+	time.sleep(7)
 	
 
 def worm_dance(sleep):
 	
 	dog.translation("z", 75)
 	time.sleep(1)
-	dog.periodic_rot("p", 2.5) #entre 2 e 3 deve ser o ideal
+	dog.periodic_rot("p", 2.5) 
 	time.sleep(sleep)
 	dog.periodic_rot("p", 0)
 	
@@ -228,9 +223,6 @@ def lie_down(sleep):
 	dog.motor(22, 80)
 	dog.motor(11, -38)
 	dog.motor(21, -38)
-	
-	#dog.motor(33, 31)
-	#dog.motor(43, 31) Ver ainda quais fazem mais sentido
 	dog.motor(13, 31)
 	dog.motor(43, 31)
 	
@@ -248,8 +240,112 @@ def sit():
 	leg_motor("fr", "b", 43)
 	time.sleep(2)
 	
+def give_paw():
+	dog.reset()
+	
+	dog.translation("x", -35)
+	dog.attitude("p", -20)
+	robotAPI.leg_motor("bl", "b", -25)
+	robotAPI.leg_motor("br", "b", -25)
+	robotAPI.leg_motor("bl", "m", 60)
+	robotAPI.leg_motor("br", "m", 60)
+	robotAPI.leg_motor("fl", "b", 43)
+	robotAPI.leg_motor("fr", "b", 43)
+	dog.motor([13,23], [-5, -5])
+	time.sleep(1)
+	dog.motor(12, -20)
+	time.sleep(0.5)
+	dog.motor(11, 0)
+	time.sleep(3)
+	dog.motor(12, 20)
+	time.sleep(0.5)
+	dog.reset()
+	
+def paw_wave():
+	dog.reset()
+	
+	dog.translation("x", -35)
+	dog.attitude("p", -20)
+	leg_motor("bl", "b", -25)
+	leg_motor("br", "b", -25)
+	leg_motor("bl", "m", 60)
+	leg_motor("br", "m", 60)
+	leg_motor("fl", "b", 43)
+	leg_motor("fr", "b", 43)
+	dog.motor([13,23], [-5,-5])
+	time.sleep(2)
+	
+	for _ in range(4):
+		
+		dog.motor([12, 11], [-50,-65])
+		time.sleep(1)
+		dog.motor([12, 11], [40,43])
+		
+		time.sleep(0.7)
+        
+		dog.motor([22, 21], [-50,-65])
+		time.sleep(1)
+		dog.motor([22, 21], [40,43])
+		time.sleep(0.7)
+		
+	dog.reset()
+	
+def salsa_dance():
+	dog.reset()
+	time.sleep(0.5)
+    
+	for _ in range(6):
+		dog.translation("y", 20)
+		dog.attitude("r", 15)
+		time.sleep(0.5)
+        
+		dog.translation("y", 0)
+		dog.attitude("r", 0)
+		time.sleep(0.3)
+        
+        
+		dog.translation("y", -20)
+		dog.attitude("r", -15)
+		time.sleep(0.5)
+        
+        
+		dog.translation("y", 0)
+		dog.attitude("r", 0)
+		time.sleep(0.3)
+    
+	dog.reset()
 
+def periodic_translation(direction, period, time_to_sleep):
+	
+	periodMap = {
+        "slow": 8,  
+        "medium": 4,  
+        "fast": 1.5,
+	}
+    
+	pace = periodMap[period.lower()]
+    
+	dog.periodic_tran(direction, pace)
+	time.sleep(time_to_sleep)
+	dog.periodic_tran(direction, 0)
 
+def periodic_rotation(direction, period, time_to_sleep):
+	
+	periodMap = {
+        "slow": 8,  
+        "medium": 4,  
+        "fast": 1.5, 
+	}
+    
+	pace = periodMap[period.lower()]
+    
+	dog.periodic_rot(direction, pace)
+	time.sleep(time_to_sleep)
+	dog.periodic_rot(direction, 0)
+	
+def motor_speed(speed):
+	dog.motor_speed(speed)
+        
 #========================================
 #				   Arm
 #========================================
@@ -308,8 +404,13 @@ def handshake():
 	time.sleep(1)
 	dog.reset()
 	
-
-
+def reset_arm():
+	dog.arm_mode(0)
+	arm_position(-40,28)
+	
+def arm_mode(mode):
+	dog.arm_mode(mode)
+	
 #def reset_arm():
 #	dog.arm(0, 0) #o dog.reset() da reset ao cao todo, dai testar se da para evitar isso
 #	time.sleep(1)
@@ -360,6 +461,22 @@ def scared_face():
 def tongue_face():
 	edu.lcd_clear()
 	edu.lcd_picture("faces/tongue_face.png", 5, 0)	
+	
+	
+def draw_line(x1, y1, x2, y2, color=(255, 255, 255), width=1):
+    edu.lcd_line(x1, y1, x2, y2, color=color, width=width)
+
+def draw_arc(x1, y1, x2, y2, angle0, angle1, color=(255, 255, 255), width=1):
+    edu.lcd_circle(x1, y1, x2, y2, angle0, angle1, color=color, width=width)
+
+def draw_rectangle(x1, y1, x2, y2, fill=None, outline=(255, 255, 255), width=1):
+    edu.lcd_rectangle(x1, y1, x2, y2, fill=fill, outline=outline, width=width)
+
+def draw_text(x, y, content, color=(255, 255, 255), fontsize=16):
+    edu.lcd_text(x, y, content, color=color, fontsize=fontsize)
+    
+def screen_clear():
+	edu.lcd_clear()
 
 #========================================
 #				   AI (Recognition)
@@ -388,6 +505,21 @@ def detect_ok():
 		if result != None:
 			ges, (x,y) = result
 			if ges == "Ok":
+				time.sleep(2)
+				edu.lcd_clear()
+				return True
+	edu.lcd_clear()
+	return False
+	
+def detect_number(number):
+	start = time.time()	
+	while time.time() - start < 20:
+		result = edu.gestureRecognition()
+		print(result)
+		
+		if result != None:
+			numb, (x,y) = result
+			if int(numb) == number:
 				time.sleep(2)
 				edu.lcd_clear()
 				return True
@@ -423,6 +555,71 @@ def detect_sad():
 				return True
 	edu.lcd_clear()
 	return False
+	
+def detect_angry():
+	start = time.time()	
+	while time.time() - start < 20:
+		result = edu.emotion()
+		print(result)
+		
+		if result != None:
+			emotion, (x,y) = result
+			if emotion == "Angry":
+				time.sleep(2)
+				edu.lcd_clear()
+				return True
+	edu.lcd_clear()
+	return False
+
+def detect_neutral():
+	start = time.time()	
+	while time.time() - start < 20:
+		result = edu.emotion()
+		print(result)
+		
+		if result != None:
+			emotion, (x,y) = result
+			if emotion == "Neutral":
+				time.sleep(2)
+				edu.lcd_clear()
+				return True
+	edu.lcd_clear()
+	return False
+	
+#Deteta apos ter 3 valores iguais seguidos, se nao detetar, segue
+def detect_age(interval, inside):
+	start = time.time()	
+	confirmation = 0
+	isInside = str(inside).lower() == "true"
+	
+	while time.time() - start < 20:
+		result = edu.agesex()
+		print(result)
+		
+		if result != None:
+			sex, age, (x,y) = result
+			
+			if(isInside):
+				
+				if (age == interval):
+					confirmation += 1
+				else:
+					confirmation = 0
+					
+			else:	
+					
+				if (age != interval):
+					confirmation += 1
+				else:
+					confirmation = 0
+			
+			if confirmation >= 3:
+				time.sleep(2)
+				edu.lcd_clear()
+				return True
+				
+	edu.lcd_clear()
+	return False
 
 #========================================
 #				   Sounds 
@@ -447,3 +644,39 @@ def sleep():
     edu.xgoSpeaker("sounds/sleep.mp3")
     return True
 
+
+#========================================
+#				   Sensors 
+#========================================
+def update_sensor_display(roll, pitch, yaw):
+	edu.lcd_clear()
+	edu.lcd_text(20, 60,  f"Roll:  {roll}°",  (255, 255, 255), 30)
+	edu.lcd_text(20, 100, f"Pitch: {pitch}°", (255, 255, 255), 30)
+	edu.lcd_text(20, 140, f"Yaw:   {yaw}°",   (255, 255, 255), 30)
+    
+def read_roll():
+	roll  = dog.read_roll()
+	pitch = dog.read_pitch()
+	yaw   = dog.read_yaw()
+	update_sensor_display(roll, pitch, yaw)
+	return float(roll)
+	
+def read_pitch():
+	roll  = dog.read_roll()
+	pitch = dog.read_pitch()
+	yaw   = dog.read_yaw()
+	update_sensor_display(roll, pitch, yaw)
+	return float(pitch)
+
+def read_yaw():
+	roll  = dog.read_roll()
+	pitch = dog.read_pitch()
+	yaw   = dog.read_yaw()
+	update_sensor_display(roll, pitch, yaw)
+	return float(yaw)
+	
+def read_battery():
+	bat = dog.read_battery()
+	return float(bat)
+	
+#FAZER DO READ_MOTOR() que da os valores todos?

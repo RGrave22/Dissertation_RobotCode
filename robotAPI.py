@@ -160,7 +160,6 @@ def leg_motor(leg_str, motor, value):
     #time.sleep(1)
    
 
-#AINDA SEM BLOCO INDIVIUAl
 def pushups():
 	dog.motor(31, 73)
 	dog.motor(41, 73)
@@ -193,7 +192,7 @@ def worm_dance(sleep):
 	
 	dog.translation("z", 75)
 	time.sleep(1)
-	dog.periodic_rot("p", 2.5) #entre 2 e 3 deve ser o ideal
+	dog.periodic_rot("p", 2.5) 
 	time.sleep(sleep)
 	dog.periodic_rot("p", 0)
 	
@@ -343,6 +342,9 @@ def periodic_rotation(direction, period, time_to_sleep):
 	dog.periodic_rot(direction, pace)
 	time.sleep(time_to_sleep)
 	dog.periodic_rot(direction, 0)
+	
+def motor_speed(speed):
+	dog.motor_speed(speed)
         
 #========================================
 #				   Arm
@@ -406,8 +408,9 @@ def reset_arm():
 	dog.arm_mode(0)
 	arm_position(-40,28)
 	
-
-
+def arm_mode(mode):
+	dog.arm_mode(mode)
+	
 #def reset_arm():
 #	dog.arm(0, 0) #o dog.reset() da reset ao cao todo, dai testar se da para evitar isso
 #	time.sleep(1)
@@ -641,3 +644,39 @@ def sleep():
     edu.xgoSpeaker("sounds/sleep.mp3")
     return True
 
+
+#========================================
+#				   Sensors 
+#========================================
+def update_sensor_display(roll, pitch, yaw):
+	edu.lcd_clear()
+	edu.lcd_text(20, 60,  f"Roll:  {roll}°",  (255, 255, 255), 30)
+	edu.lcd_text(20, 100, f"Pitch: {pitch}°", (255, 255, 255), 30)
+	edu.lcd_text(20, 140, f"Yaw:   {yaw}°",   (255, 255, 255), 30)
+    
+def read_roll():
+	roll  = dog.read_roll()
+	pitch = dog.read_pitch()
+	yaw   = dog.read_yaw()
+	update_sensor_display(roll, pitch, yaw)
+	return float(roll)
+	
+def read_pitch():
+	roll  = dog.read_roll()
+	pitch = dog.read_pitch()
+	yaw   = dog.read_yaw()
+	update_sensor_display(roll, pitch, yaw)
+	return float(pitch)
+
+def read_yaw():
+	roll  = dog.read_roll()
+	pitch = dog.read_pitch()
+	yaw   = dog.read_yaw()
+	update_sensor_display(roll, pitch, yaw)
+	return float(yaw)
+	
+def read_battery():
+	bat = dog.read_battery()
+	return float(bat)
+	
+#FAZER DO READ_MOTOR() que da os valores todos?

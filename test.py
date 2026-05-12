@@ -99,11 +99,26 @@ def give_paw():
 	
 def main():
 	dog.reset()	
-	give_paw()
 	
 	
+	#robotAPI.leg_motor("fr", "b", 0)
 	
-	print(dog.read_battery())
+	#dog.leg(2, [10,0,0])
+	#dog.leg(3, [10,0,0])
+	#dog.leg(4, [10,0,0])
+	#dog.leg(4, [10,0,0])
+	
+	print(dog.read_motor())
+	print(dog.read_roll())
+	print(dog.read_pitch())
+	print(dog.read_yaw())
+	
+	dog.motor_speed(120)
+	
+	robotAPI.pushups()
+		
+	robotAPI.read_pitch()
+	#print(dog.read_battery())
 	
 
 
